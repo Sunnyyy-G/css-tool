@@ -1,0 +1,404 @@
+@charset "utf-8";
+
+/* @import "mixins/clearfix"; */
+
+// 清楚浮动
+%clearfix {
+    zoom: 1;
+    &:after {
+        content: ".";
+        clear: both;
+        display: block;
+        height: 0;
+        visibility: hidden;
+    }
+}
+
+
+/* @import "mixins/hide-col"; */
+
+// 超出N行文字出现省略号
+// 参数：$num行数， $lh行高
+// 默认：超出 1 行，行高为 1.5
+// eg: @include hide-col;
+// or @include hide-col(2);
+// or @include hide-col(2, 2);
+@mixin hide-col($num:1, $lh:1.5) {
+    display: -webkit-box;
+    -webkit-line-clamp: $num;
+    /*autoprefixer:ignorenext*/
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 1em * $num * $lh;
+}
+
+%hide-1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* @import "mixins/hide-font"; */
+
+// 字体隐藏
+%hide-font {
+    font-size: 0;
+    color: transparent;
+}
+
+
+/* @import "mixins/flex"; */
+
+// flex
+%flex {
+    display: flex;
+}
+
+%iflex {
+    display: inline-flex;
+}
+
+// 水平居中
+%flex-h {
+    @extend %flex;
+    justify-content: center;
+}
+
+%iflex-h {
+    @extend %iflex;
+    justify-content: center;
+}
+
+// 垂直居中
+%flex-v {
+    @extend %flex;
+    align-items: center;
+}
+
+%iflex-v {
+    @extend %iflex;
+    align-items: center;
+}
+
+// 水平和垂直居中
+%flex-hv {
+    @extend %flex;
+    justify-content: center;
+    align-items: center;
+}
+
+%iflex-hv {
+    @extend %iflex;
+    justify-content: center;
+    align-items: center;
+}
+
+// 垂直方向
+%flex-col {
+    flex-direction: column;
+}
+
+// 一行内子元素两端对齐
+%flex-side {
+    @extend %flex;
+    justify-content: space-between;
+}
+
+%iflex-side {
+    @extend %iflex;
+    justify-content: space-between;
+}
+
+
+/* @import "mixins/center"; */
+
+// 居中
+// margin 水平居中
+@mixin center-mr($width: auto) {
+    width: $width;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+// position 居中
+// margin
+@mixin center-pos-mr($width, $height) {
+    width: $width;
+    height: $height;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -(math.div($height, 2));
+    margin-left: -(math.div($width, 2));
+}
+
+// transform
+%center-pos-tf {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// banner图居中
+%center-bar {
+    position: relative;
+    overflow: hidden;
+    &-img,
+    &-pic,
+    .banner-img,
+    .banner-pic {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+
+/* @import "mixins/create-dot"; */
+
+// 创建一个圆点
+// 必需参数：$dr 直径，$color 色值
+// eg: @include create-dot(10px, #F11D12);
+@mixin create-dot($dr, $color) {
+    display: inline-block;
+    width: $dr;
+    height: $dr;
+    background-color: $color;
+    border-radius: math.div($dr, 2);
+}
+
+
+/* @import "mixins/create-plus"; */
+
+// 创建一个加号图标
+// 必需参数：$long 最长边长， $thick 厚度，$color 色值
+// eg: @include create-plus(20px,2px,#717171);
+@mixin create-plus($long, $thick, $color) {
+    display: inline-block;
+    position: relative;
+    width: $long;
+    height: $long;
+    &:before,
+    &:after {
+        position: absolute;
+        content: "";
+        display: inline-block;
+        background-color: $color;
+    }
+    &:before {
+        left: 0;
+        top: math.div($long - $thick, 2);
+        width: $long;
+        height: $thick;
+    }
+    &:after {
+        left: math.div($long - $thick, 2);
+        top: 0;
+        width: $thick;
+        height: $long;
+    }
+}
+
+
+/* @import "mixins/create-triangle"; */
+
+// 创建一个实心三角形
+//
+// 必需参数：
+// $dir 方向（top | left | bottom | right）
+// $long 最长边长
+// $short-l 沿着长边延展方向的左侧边长，$short-r 沿着长边延展方向的右侧边长
+// $color 色值
+//
+// eg: @include create-triangle(top, 12px, 8px, 8px, $c-gray-7);
+// or @include create-triangle($long: 12px, $short-l: 6px, $color: $c-gray-7);
+@mixin create-triangle($dir: top, $long: 10px, $short-l: 0, $short-r: 0, $color: #ECECEC) {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    font-size: 0;
+    @if($dir==top) {
+        border-bottom: $long solid $color;
+        border-left: $short-l solid transparent;
+        border-right: $short-r solid transparent;
+    }
+    @if($dir==bottom) {
+        border-top: $long solid $color;
+        border-left: $short-r solid transparent;
+        border-right: $short-l solid transparent;
+    }
+    @if($dir==left) {
+        border-right: $long solid $color;
+        border-top: $short-r solid transparent;
+        border-bottom: $short-l solid transparent;
+    }
+    @if($dir==right) {
+        border-left: $long solid $color;
+        border-top: $short-l solid transparent;
+        border-bottom: $short-r solid transparent;
+    }
+}
+
+
+/* @import "mixins/set-scrollbar"; */
+
+// 设置滚动条皮肤
+//
+// 参数：$dir滚动条方向 y | x， $c-front 前景色，$c-bg 背景色，$width 宽度，$radius 圆角百分比
+// 默认：前景色为#D9D9D9，带1px圆角，宽2px的垂直滚动条
+//
+// eg: @include set-scrollbar;
+// or @include set-scrollbar($c-front: #ececec);
+// or @include set-scrollbar(x, #ECECEC, transparent, 4px, 0);
+@mixin set-scrollbar($dir:y, $c-front: #D9D9D9, $c-bg: $c-trans, $width: 2px, $radius: 0.5) {
+    @if $dir==y {
+        overflow-y: auto;
+    }
+    @if $dir==x {
+        overflow-x: auto;
+    }
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+        width: $width;
+        background-color: $c-bg;
+        border-radius: $width * $radius;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: $c-front;
+        border-radius: $width * $radius;
+    }
+}
+
+
+/* @import "mixins/layer"; */
+
+// 弹窗框架
+//
+// 可选参数
+// $c-bg 蒙层背景色（dark | light | 自定义rgba），默认dark暗色
+// $z-index 层级，默认9999
+@mixin layer($c-bg: dark, $z-index: 9999) {
+    height: 100vh;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    z-index: $z-index;
+    text-align: center;
+    &:after {
+        content: '.';
+        @extend %hide-font;
+        display: inline-block;
+        line-height: 100vh;
+    }
+    @if dark {
+        background-color: rgba(0, 0, 0, .7);
+    }
+    @else if light {
+        background-color: rgba(255, 255, 255, .6);
+    }
+    @else {
+        background-color: $c-bg;
+    }
+    &-wrap {
+        position: relative;
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+    &-close {
+        position: absolute;
+    }
+}
+
+
+/*
+  just for mobile
+  @import "mixins/fix-iphone";
+  @import "mixins/responsive";
+  @import "mixins/set-line";
+*/
+
+
+/* @import "mixins/fix-iphone"; */
+
+//iphoneX 安全高度
+%fix-iphone {
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+
+/* @import "mixins/responsive"; */
+
+// 断点区间
+@mixin res($key, $map: $--breakpoints) {
+    // 循环断点Map，如果存在则返回
+    @if map-has-key($map, $key) {
+        @media only screen and #{inspect(map-get($map, $key))} {
+            @content;
+        }
+    }
+    @else {
+        @warn "Undefeined points: `#{$map}`";
+    }
+}
+
+
+/* @import "mixins/set-line"; */
+
+@mixin setTopLine($color: #C7C7C7) {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 1px;
+    border-top: 1px solid $color;
+    color: $color;
+    transform-origin: 0 0;
+    transform: scaleY(0.5);
+}
+
+@mixin setBottomLine($color: #C7C7C7) {
+    content: " ";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 1px;
+    border-bottom: 1px solid $color;
+    color: $color;
+    transform-origin: 0 100%;
+    transform: scaleY(0.5);
+}
+
+@mixin setLeftLine($color: #C7C7C7) {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    bottom: 0;
+    border-left: 1px solid $color;
+    color: $color;
+    transform-origin: 0 0;
+    transform: scaleX(0.5);
+}
+
+@mixin setRightLine($color: #C7C7C7) {
+    content: " ";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1px;
+    bottom: 0;
+    border-right: 1px solid $color;
+    color: $color;
+    transform-origin: 100% 0;
+    transform: scaleX(0.5);
+}
